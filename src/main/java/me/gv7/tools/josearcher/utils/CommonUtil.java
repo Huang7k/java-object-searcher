@@ -1,8 +1,5 @@
 package me.gv7.tools.josearcher.utils;
 
-import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
-import me.gv7.tools.josearcher.entity.NodeT;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
@@ -14,6 +11,8 @@ public class CommonUtil {
     public static String getBanner(){
         String banner = "#############################################################\n" +
                         "   Java Object Searcher v0.01\n" +
+                        "   change_by: doubleq original_author: c0ny1<root@gv7.me>\n" +
+                        "   github: https://github.com/likCodinG/java-object-searcher\n"+
                         "#############################################################\n\n\n";
         return banner;
     }
@@ -58,7 +57,6 @@ public class CommonUtil {
         }
     }
 
-
     public static String getBlank(int n){
         String strTab = "";
         for(int i=0;i<n;i++){
@@ -75,29 +73,34 @@ public class CommonUtil {
     }
 
 
-
+    /**
+     * 对普通类型以及Array类型进行代码生成，首先遍历获取到对应的filed
+     * @param index
+     * @param proName
+     * @param condition
+     * @param args
+     * @return
+     */
     public static String generateCode(int index, String proName, int condition,Object...args) {
 
         String statement = "";
         String tmp = null;
-        Object object = null;
-        Class aClass = null;
-        Object[] objectArray = null;
-        Field declaredField = null;
-        Method declaredMethod = null;
 
+//        获取对应父类的class对象
         if(index > 0){
-            tmp = String.format("for (int j = 0;j < %d;j ++) {\n    if(j == 0) {\n        aClass = object.getClass().getSuperclass();\n    } else if (j > 0) {\n        aClass = aClass.getSuperclass();    \n    }\n}\n",index);
-
+            tmp = String.format(
+                    "aClass = object.getClass();\n" +
+                    "for (int j = 1;j <= %d;j ++) aClass = aClass.getSuperclass();\n",index);
         } else {
             tmp = String.format("aClass = object.getClass();\n");
         }
 
-
         statement += tmp;
 
-        tmp = String.format("declaredField = aClass.getDeclaredField(\"%s\");\ndeclaredField.setAccessible(true);\nobject = declaredField.get(object);\n\n",proName);
-
+        tmp = String.format(
+                "declaredField = aClass.getDeclaredField(\"%s\");\n" +
+                "declaredField.setAccessible(true);\n" +
+                "object = declaredField.get(object);\n\n",proName);
         statement += tmp;
 
 //        处理array的情况
@@ -118,22 +121,26 @@ public class CommonUtil {
                         "}\n",args[1]);
                 statement += tmp;
             }
-
         }
 
         return statement;
     }
 
-//    生成set map list的处理语句
-//    1、list   2、map   3、set
+    /**
+     * 生成Set、Map、List类型的代码
+     * condition对应不同的类型
+     * @param condition
+     * @param index
+     * @return
+     */
     public static String generateCode(int condition, int index) {
 
         String statement = "";
-//        list
+
         switch (condition) {
             case 1:statement = String.format("list = (List) object;\nobject = list.get(%d);\n\n",index); break;
             case 2:statement = String.format(
-                    "set = (Set) object;\n" +
+                            "set = (Set) object;\n" +
                             "iterator = set.iterator();\n" +
                             "i = 0;\n" +
                             "while (iterator.hasNext()) {\n" +
@@ -144,7 +151,7 @@ public class CommonUtil {
                             "    i ++;\n" +
                             "}\n\n",index);break;
             case 3: statement = String.format(
-                    "map = (Map) object;\n" +
+                            "map = (Map) object;\n" +
                             "it = map.entrySet().iterator();\n" +
                             "i = 0;\n" +
                             "while (it.hasNext()) {\n" +
@@ -157,8 +164,6 @@ public class CommonUtil {
                             "}\n\n",index);break;
             default:break;
         }
-
         return statement;
     }
-
 }

@@ -6,7 +6,7 @@
 #############################################################
    Java Object Searcher v0.01
    change_by: doubleq original_author: c0ny1<root@gv7.me>
-   github: xxx
+   github: https://github.com/likCodinG/java-object-searcher
 #############################################################
 ```
 

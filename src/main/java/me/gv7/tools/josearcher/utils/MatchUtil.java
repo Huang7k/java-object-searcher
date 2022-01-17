@@ -8,17 +8,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class MatchUtil {
-    public static boolean matchClassType(String clsType,String[] keys){
-        clsType = clsType.toLowerCase();
-        for(String key:keys){
-            key = key.toLowerCase();
-            if(clsType.contains(key)){
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * 比较对象
      * @param field_name
@@ -39,40 +28,6 @@ public class MatchUtil {
             if(field_value.getClass().getSimpleName().toLowerCase().indexOf(tmp) != -1 || field_name.toLowerCase() == keyword_field_name) {
                 return true;
             }
-//            对象名可以不包含，但是类名中必须包含
-//            if(field_name.indexOf(tmp) != -1 && field_type.indexOf(tmp) != -1) {
-//                return true;
-//            }
-
-//            //属性名
-//            if(keyword.getField_name() != null){
-//                if(isIn(field_name,keyword.getField_name(),false)){
-//                    isInFieldName = true;
-//                }
-//            }else{
-//                isInFieldName = true;
-//            }
-//
-//            //属性值
-//            if(keyword.getField_value() != null){
-//                if(isIn(field_value.toString(),keyword.getField_value(),false)){
-//                    isInFieldValue = true;
-//                }
-//            }else{
-//                isInFieldValue = true;
-//            }
-//            //属性类型
-//            if(keyword.getField_type() != null){
-//                if(isIn(field_type,keyword.getField_type(),false)){
-//                    isInFieldType = true;
-//                }
-//            }else{
-//                isInFieldType = true;
-//            }
-//
-//            if(isInFieldName && isInFieldValue && isInFieldType){
-//                return true;
-//            }
         }
         return false;
     }
