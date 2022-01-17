@@ -1,50 +1,40 @@
 <h1 align="center">Java Object Searcher | java内存对象搜索辅助工具</h1>
 
-<p align="center">
-  <img title="portainer" src='https://img.shields.io/badge/version-0.1.0-brightgreen.svg' />
-  <img title="portainer" src='https://img.shields.io/badge/java-1.7.*-yellow.svg' />
-  <img title="portainer" src='https://img.shields.io/badge/license-MIT-red.svg' />
-</p>
-
-
 ## 0x01 工具简介
 
 ```
 #############################################################
    Java Object Searcher v0.01
-   author: c0ny1<root@gv7.me>
-   github: http://github.com/c0ny1/java-object-searcher
+   change_by: doubleq original_author: c0ny1<root@gv7.me>
+   github: xxx
 #############################################################
 ```
+
+改自c0ny1师傅的Java Object Searcher项目
 
 配合IDEA在Java应用运行时，对内存中的对象进行搜索。比如可以可以用挖掘request对象用于回显，辅助构造java内存webshell等场景。
 
 ## 0x02 知识储备
 
-使用之前必须了解的三个概念
+需要了解Object对象对象搜索器
 
 #### 2.1 搜索器
-根据要搜索什么样的对象，选择对应的搜索器，目前项目有三类。
+项目中只有一种搜索器，就是通过广度优先遍历去搜索。
 
-* JavaObjectSearcher 普通搜索器
-* SearchRequstByBFS 通过广度优先搜索requst对象搜索器
-* SearchRequstByRecursive 通过深度优先搜索requst对象搜索器(递归实现)
+* SearchObjectByBFS 通过广度优先搜索requst对象搜索器
 
 #### 2.2 关键字 & 黑名单
 
-关键字是搜索目标对象的关键，可以目标三个属性`属性名`(field_name),`属性值`(field_value)和`属性类型`(field_type)。
+关键字是搜索目标对象的关键，可以目标两个个属性`属性名`(field_name)和`属性类型`(field_type)。
 
-比如想搜索属性名为table同时属性值为test的对象，还搜索属性名`request`同时属性类型包含`RequestInfo`关键字的，对应的逻辑表达试如下：
+比如想搜索属性名为`request`同时属性类型包含`RequestInfo`关键字的，对应的逻辑表达试如下：
 
-```$xslt
-(field_name = table & field_value = test) || (field_name = request & field_type = RequestInfo)
-```
+属性名会进行精准匹配，属性类型会进行模糊匹配
 
 编写代码如下：
 
 ```java
 List<Keyword> keys = new ArrayList<>();
-keys.add(new Keyword.Builder().setField_name("table").setField_type("test").build());
 keys.add(new Keyword.Builder().setField_name("request").setField_type("RequestInfo").build());
 ```
 
@@ -72,7 +62,7 @@ keys.add(new Keyword.Builder().setField_type("Request").build());
 List<Blacklist> blacklists = new ArrayList<>();
 blacklists.add(new Blacklist.Builder().setField_type("java.io.File").build());
 //新建一个广度优先搜索Thread.currentThread()的搜索器
-SearchRequstByBFS searcher = new SearchRequstByBFS(Thread.currentThread(),keys);
+SearchRequstByBFS searcher = new SearchRequstByBFS(Thread.currentThread(),"Thread.currentThread()",keys);
 // 设置黑名单
 searcher.setBlacklists(blacklists);
 //打开调试模式,会生成log日志
@@ -80,16 +70,11 @@ searcher.setIs_debug(true);
 //挖掘深度为20
 searcher.setMax_search_depth(20);
 //设置报告保存位置
-searcher.setReport_save_path("D:\\apache-tomcat-7.0.94\\bin");
+searcher.setReport_save_path("User/xxx");
 searcher.searchObject();
 ```
 
-## 0x04 更多
+## 0x04 参考
+* http://github.com/c0ny1/java-object-searcher
 * [半自动化挖掘request实现多种中间件回显](http://gv7.me/articles/2020/semi-automatic-mining-request-implements-multiple-middleware-echo/)
 
-## 0x05 404StarLink 2.0 - Galaxy
-![](https://github.com/knownsec/404StarLink-Project/raw/master/logo.png)
-
-`java-object-searcher`是`404Team` [星链计划2.0](https://github.com/knownsec/404StarLink2.0-Galaxy)中的一环，如果对java-object-searcher有任何疑问又或是想要找小伙伴交流，可以参考星链计划的加群方式。
-
-- [https://github.com/knownsec/404StarLink2.0-Galaxy#community](https://github.com/knownsec/404StarLink2.0-Galaxy#community)
