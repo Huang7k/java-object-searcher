@@ -6,6 +6,7 @@ import me.gv7.tools.josearcher.entity.NodeT;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Locale;
 
 public class MatchUtil {
     /**
@@ -16,18 +17,28 @@ public class MatchUtil {
      * @return
      */
     public static boolean matchObject(String field_name, Object field_value, List<Keyword> keyword_list){
-        String field_type = field_value.getClass().getName().toLowerCase();
-        boolean isInFieldName = false;
-        boolean isInFieldValue = false;
-        boolean isInFieldType = false;
+        String [] field_name_array = null;
+        String tmp = null;
         for(Keyword keyword:keyword_list){
-            String tmp = keyword.getField_type().toLowerCase();
 
-            String keyword_field_name = keyword.getField_name() == null?tmp : keyword.getField_name().toLowerCase();
+            if(keyword.getField_type() != null) {
+                tmp = keyword.getField_type().toLowerCase();
 
-            if(field_value.getClass().getSimpleName().toLowerCase().indexOf(tmp) != -1 || field_name.toLowerCase() == keyword_field_name) {
-                return true;
+                if(field_value.getClass().getSimpleName().toLowerCase().indexOf(tmp) != -1) {
+                    return true;
+                }
             }
+
+            if(keyword.getField_name() != null) {
+                field_name_array = keyword.getField_name().split(":");
+
+                for (String str: field_name_array) {
+                    if(str.toLowerCase().toLowerCase() == field_name.toLowerCase()) {
+                        return true;
+                    }
+                }
+            }
+
         }
         return false;
     }
